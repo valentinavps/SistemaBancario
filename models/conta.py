@@ -1,7 +1,7 @@
 from colorama import Fore, Style
 from datetime import datetime
 
-from .historico.py import Historico
+from .historico import Historico
 
 class Conta:
     def __init__(self, numero, cliente):
