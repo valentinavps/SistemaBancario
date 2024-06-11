@@ -2,6 +2,15 @@ import logging
 from datetime import datetime
 from colorama import Fore, Style
 
+# Configurações do logger para escrever em um arquivo .txt
+logging.basicConfig(
+    filename="/home/valentinavps/POO/SistemaBancario/log.txt",
+    filemode="a",
+    level=logging.INFO,
+    format="%(asctime)s - %(message)s",
+    datefmt="%d-%m-%Y %H:%M:%S",
+)
+
 class Historico:
     def __init__(self):
         self._transacoes = []

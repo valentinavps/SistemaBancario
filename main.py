@@ -1,12 +1,26 @@
 from colorama import Fore, Style
 from utils.menu import menu
 from services.operacoes import depositar, sacar, exibir_extrato, criar_cliente, criar_conta, listar_contas
+import logging
+
+
+# Configurações do logger para escrever em um arquivo .txt
+logging.basicConfig(
+    filename="/home/valentinavps/POO/SistemaBancario/log.txt",
+    filemode="a",
+    level=logging.INFO,
+    format="%(asctime)s - %(message)s",
+    datefmt="%d-%m-%Y %H:%M:%S",
+)
 
 def main():
     clientes = []
     contas = []
 
+    
+
     while True:
+        
         opcao = menu()
 
         if opcao == "d":
