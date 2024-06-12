@@ -5,6 +5,9 @@ from utils.helpers import filtrar_cliente, recuperar_conta_cliente
 from datetime import datetime
 from colorama import Fore, Style
 
+clientes_arquivo = "/home/valentinavps/POO/SistemaBancario/clientes.txt"
+contas_arquivo = "/home/valentinavps/POO/SistemaBancario/contas.txt"
+
 def depositar(clientes):
     cpf = input("Informe o CPF do cliente: ")
     cliente = filtrar_cliente(cpf, clientes)
@@ -108,6 +111,8 @@ def criar_cliente(clientes):
     data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
     with open("log.txt", "a") as file:
         file.write(f"Cliente criado: {nome} | CPF: {cpf} | ({data_hora})\n")
+    with open(clientes_arquivo, "a") as file:
+        file.write(f"Nome: {cliente.nome}| CPF: {cpf} \n")
 
     print(Fore.GREEN + f"\n✅✅✅ Cliente criado com sucesso! {data_hora} ✅✅✅")
     print(Style.RESET_ALL)  # Resetando a cor
@@ -128,6 +133,8 @@ def criar_conta(numero_conta, clientes, contas):
     data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
     with open("log.txt", "a") as file:
         file.write(f"Nova conta criada para o cliente {cliente.nome} | Conta: {numero_conta} | ({data_hora})\n")
+    with open(contas_arquivo, "a") as file:
+        file.write(f"Cliente: {cliente.nome}| Conta: {numero_conta} \n")
 
     print(Fore.GREEN + f"\n✅✅✅ Conta criada com sucesso! {data_hora} ✅✅✅")
     print(Style.RESET_ALL)  # Resetando a cor
