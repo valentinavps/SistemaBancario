@@ -80,13 +80,22 @@ def exibir_extrato(clientes):
     print(Fore.CYAN + "==========================================")
 
 def criar_cliente(clientes):
-    cpf = input("Informe o CPF (somente números): ")
-    cliente = filtrar_cliente(cpf, clientes)
+    
+    while True:
+        cpf = input("Informe o CPF (somente números): ")
+        # Verifica se o CPF contém apenas números e tem exatamente 11 dígitos
+        if not cpf.isdigit() or len(cpf) != 11:
+            print(Fore.RED + "\n❌❌❌ CPF inválido ❌❌❌")
+            print(Style.RESET_ALL)  # Resetando a cor
+            continue  
+        cliente = filtrar_cliente(cpf, clientes)
+    
 
-    if cliente:
-        print(Fore.YELLOW + "\n❗❗❗ Já existe cliente com esse CPF! ❗❗❗")
-        print(Style.RESET_ALL)  # Resetando a cor
-        return
+        if cliente:
+            print(Fore.YELLOW + "\n❗❗❗ Já existe cliente com esse CPF! ❗❗❗")
+            print(Style.RESET_ALL)  # Resetando a cor
+            return
+        break
 
     nome = input("Informe o nome completo: ")
 
