@@ -7,60 +7,22 @@ class Transacao(ABC):
     @property
     @abstractproperty
     def valor(self) -> float:
-        """
-        Propriedade abstrata que deve ser implementada nas subclasses para retornar o valor da transação.
-
-        Returns:
-        - float: Valor da transação.
-        """
         pass
 
     @abstractclassmethod
     def registrar(cls, conta: object) -> None:
-        """
-        Método abstrato que deve ser implementado nas subclasses para registrar a transação em uma conta.
-
-        Args:
-        - conta (object): Objeto da conta onde a transação será registrada.
-
-        Returns:
-        - None
-        """
         pass
 
 # Classe Saque que herda de Transacao e implementa os métodos abstratos
-
-
 class Saque(Transacao):
     def __init__(self, valor: float) -> None:
-        """
-        Inicializa um objeto Saque com um valor específico.
-
-        Args:
-        - valor (float): Valor do saque.
-        """
         self._valor: float = valor
 
     @property
     def valor(self) -> float:
-        """
-        Retorna o valor do saque.
-
-        Returns:
-        - float: Valor do saque.
-        """
         return self._valor
 
-    def registrar(self, conta: object) -> None:
-        """
-        Registra o saque em uma conta, adicionando-o ao histórico se for bem-sucedido.
-
-        Args:
-        - conta (object): Objeto da conta onde o saque será registrado.
-
-        Returns:
-        - None
-        """
+    def registrar(self, saldo,conta) -> None:
         sucesso_transacao: bool = conta.sacar(self.valor)
         if sucesso_transacao:
             conta.historico.adicionar_transacao(self, conta)

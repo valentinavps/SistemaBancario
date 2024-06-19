@@ -18,13 +18,8 @@ class Helpers:
         self.clientes_arquivo: str = clientes_arquivo
         self.clientes: list = self.ler_clientes_arquivo()
 
+    #Lê os clientes do arquivo e os armazena em uma lista de dicionários.
     def ler_clientes_arquivo(self) -> list:
-        """
-        Lê os clientes do arquivo e os armazena em uma lista de dicionários.
-
-        Returns:
-        - list: Lista de dicionários contendo os dados dos clientes.
-        """
         clientes: list = []
         try:
             with open(self.clientes_arquivo, 'r') as file:
@@ -39,25 +34,17 @@ class Helpers:
             print(f"Arquivo {self.clientes_arquivo} não encontrado.")
         return clientes
 
-    def filtrar_cliente(self, cpf_informado: str) -> bool:
-        """
-        Filtra os clientes pelo CPF informado.
-
-        Args:
-        - cpf_informado (str): CPF do cliente a ser filtrado.
-
-        Returns:
-        - bool: True se o cliente for encontrado, False caso contrário.
-        """
+    #Filtra os clientes pelo CPF informado.
+    def filtrar_cliente(self, cpf_informado: int) -> bool:
         for cliente in self.clientes:
             if cliente.get('cpf') == cpf_informado:
                 return True
         return False
 
-# Função comentada para recuperar a conta do cliente
-# def recuperar_conta_cliente(cliente):
-#     if not cliente.contas:
-#         print(Fore.YELLOW + "\n❗❗❗ Cliente não possui conta! ❗❗❗")
-#         print(Style.RESET_ALL)  # Resetando a cor
-#         return
-#     return cliente.contas[0]  # FIXME: não permite cliente escolher a conta
+#Função comentada para recuperar a conta do cliente
+def recuperar_conta_cliente(cliente):
+    if not cliente.contas:
+        print(Fore.YELLOW + "\n❗❗❗ Cliente não possui conta! ❗❗❗")
+        print(Style.RESET_ALL)  # Resetando a cor
+        return
+    return cliente.contas[0]  # FIXME: não permite cliente escolher a conta

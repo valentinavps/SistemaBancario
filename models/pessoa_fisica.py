@@ -1,80 +1,83 @@
-import logging
 from datetime import datetime
 from colorama import Fore, Style
+from models.conta_corrente import ContaCorrente
+from utils.helpers import Helpers
 
-# Configurações do logger para escrever em um arquivo .txt
-logging.basicConfig(
-    filename="/home/valentinavps/POO/SistemaBancario/log.txt",
-    filemode="a",
-    level=logging.INFO,
-    format="%(asctime)s - %(message)s",
-    datefmt="%d-%m-%Y %H:%M:%S",
-)
+from utils.helpers import filtrar_cliente, recuperar_conta_cliente, filtrar_cliente_txt
 
+clientes_arquivotxt = "/home/valentinavps/POO/SistemaBancario/clientes.txt"
+contas_arquivotxt = "/home/valentinavps/POO/SistemaBancario/contas.txt"
 
-class Historico:
-    def __init__(self) -> None:
-        """
-        Inicializa um objeto Histórico com uma lista vazia de transações.
-        """
-        self._transacoes: list = []
+class PessoaFisica:
+    def __init__(self, nome, data_nascimento, cpf, endereco, senha):
+        self.endereco = endereco
+        self.nome = nome
+        self.cpf = cpf
+        self.data_nascimento = data_nascimento
+        self.__senha = senha
 
     @property
-    def transacoes(self) -> list:
-        """
-        Propriedade que retorna a lista de transações.
+    def senha(self):
+        return self.__senha
+    
+    @senha.setter
+    def senha(self, nova_senha):
+        self.__senha = nova_senha
 
-        Returns:
-        - list: Lista de transações.
-        """
-        return self._transacoes
+    def __repr__(self):
+        return f"PessoaFisica(nome={self.nome}, cpf={self.cpf}, data_nascimento={self.data_nascimento}, endereco={self.endereco})"
 
-    def adicionar_transacao(self, transacao: object, conta: object) -> None:
-        """
-        Adiciona uma transação ao histórico, registrando-a em um arquivo de log e na lista de transações,
-        se a transação ainda não estiver registrada.
+    # Cria um novo cliente e salva seus dados no arquivo de clientes.txt
+    def criar_cliente(self) -> None:
+    
+        while True:
+            cpf_informado: str = input("Informe o CPF (somente números): ")
 
-        Args:
-        - transacao (object): Objeto de transação a ser adicionado (deve ter um atributo 'valor').
-        - conta (object): Objeto de conta associado à transação.
+            # Verifica se o CPF contém apenas números e tem exatamente 11 dígitos
+            if not cpf_informado.isdigit() or len(cpf_informado) != 11:
+                print(Fore.RED + "\n❌❌❌ CPF inválido ❌❌❌")
+                continue
 
-        Returns:
-        - None
-        """
+            cliente: bool = Helpers.filtrar_cliente(cpf_informado)
+
+            if cliente:
+                print(Fore.YELLOW + "\n❗❗❗ Já existe cliente com esse CPF! ❗❗❗")
+                return
+            break
+
+        while True:
+            nome: str = input("Informe o nome completo: ")
+            if nome.isalpha():
+                break
+            else:
+                print("\n❌❌❌ Nome inválido! Informe apenas letras. ❌❌❌")
+
+        while True:
+            data_nascimento: str = input(
+                "Informe a data de nascimento (dd/mm/aaaa): ")
+            try:
+                data_nascimento_dt: datetime = datetime.strptime(
+                    data_nascimento, "%d/%m/%Y")
+                break
+            except ValueError:
+                print(
+                    Fore.RED + "\n❌❌❌ Formato de data inválido! Por favor, digite no formato dd/mm/aaaa. ❌❌❌")
+
+        endereco: str = input(
+            "Informe o endereço (logradouro, nro - bairro - cidade/sigla estado): ")
+        data_nascimento_formatada: str = data_nascimento_dt.strftime(
+            "%d-%m-%Y")
+        senha: str = input("Informe sua senha: ")
+
+        cliente = PessoaFisica(
+            nome=nome, data_nascimento=data_nascimento_formatada, cpf=cpf_informado, endereco=endereco, senha=senha
+        )
+
         data_hora: str = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-        # Obtém o nome da classe da transação
-        tipo_transacao: str = transacao.__class__.__name__
-        valor_transacao: float = transacao.valor  # Obtém o valor da transação
-        numero_conta: int = conta.numero  # Obtém o número da conta associada à transação
-
-        # Verifica se a transação já foi registrada para a mesma conta, tipo e valor
-        for t in self._transacoes:
-            if (t["conta"] == numero_conta
-                and t["tipo"] == tipo_transacao
-                    and t["valor"] == valor_transacao):
-                return  # Se encontrou uma transação idêntica, retorna sem adicionar novamente
-
-        # Registra a transação no arquivo de log
         with open("log.txt", "a") as file:
-            file.write(
-                f"Conta: {numero_conta} | Tipo: {tipo_transacao} | "
-                f"Valor: R$ {valor_transacao:.2f} | ({data_hora})\n"
-            )
+            file.write(f"Cliente criado: {nome} | CPF: {cpf_informado} | ({data_hora})\n")
+        with open(clientes_arquivotxt, "a") as file:
+            file.write(f"nome:{cliente.nome}|cpf:{cpf_informado}|senha:{cliente.senha} \n")
 
-        # Formata o registro da transação para ser adicionado à lista de transações
-        registro_transacao: str = (
-            f"{Fore.CYAN}Conta: {numero_conta} | Tipo: {tipo_transacao} | "
-            f"Valor: R$ {valor_transacao:.2f} | ({data_hora})"
-            f"{Style.RESET_ALL}"
-        )
-
-        # Adiciona a transação à lista de transações do histórico
-        self._transacoes.append(
-            {
-                "conta": numero_conta,
-                "tipo": tipo_transacao,
-                "valor": valor_transacao,
-                "data": data_hora,
-                "registro": registro_transacao,
-            }
-        )
+        print(Fore.GREEN +
+              f"\n✅✅✅ Cliente criado com sucesso! {data_hora} ✅✅✅")
