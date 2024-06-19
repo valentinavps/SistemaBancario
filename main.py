@@ -2,6 +2,7 @@ from colorama import Fore, Style
 from utils.menu import menu
 from services.operacoes import depositar, sacar, exibir_extrato, criar_cliente, criar_conta, listar_contas
 import logging
+from utils.helpers import ler_clientes_arquivo, filtrar_cliente_txt
 
 
 # Configurações do logger para escrever em um arquivo .txt
@@ -13,6 +14,8 @@ logging.basicConfig(
     datefmt="%d-%m-%Y %H:%M:%S",
 )
 
+
+
 def main():
     clientes = []
     contas = []
@@ -20,7 +23,6 @@ def main():
     
 
     while True:
-        
         opcao = menu()
 
         if opcao == "d":
