@@ -1,19 +1,40 @@
 # from .historico import Historico
 # from .conta import Conta
+
 # class Cliente:
-#     def __init__(self, endereco):
-#         self.endereco = endereco
-#         self.contas = []
+#    def __init__(self, endereco: str):
+"""
+    Inicializa um objeto Cliente com o endereço fornecido e uma lista vazia de contas.
 
-#     def realizar_transacao(self, conta, transacao):
-#         transacao.registrar(conta)
-#         conta.historico.adicionar_transacao(transacao, conta)
+    Args:
+    - endereco (str): Endereço do cliente.
+    """
+#        self.endereco = endereco
+#        self.contas = []  # Lista vazia para armazenar as contas do cliente
 
-#     def adicionar_conta(self, conta):
-#         self.contas.append(conta)
+#    def realizar_transacao(self, conta: Conta, transacao: Transacao) -> None:
+"""
+        Realiza uma transação em uma conta específica do cliente e registra no histórico.
 
-#     def imprimir_contas(self):
-#         for conta in self.contas:
-#             print(conta)
+        Args:
+        - conta (Conta): Conta na qual a transação será realizada.
+        - transacao (Transacao): Transação a ser realizada (saque, depósito, etc.).
+        """
+#        transacao.registrar(conta)                # Registra a transação na conta
+#        conta.historico.adicionar_transacao(transacao, conta)  # Adiciona a transação ao histórico da conta
 
+#    def adicionar_conta(self, conta: Conta) -> None:
+"""
+        Adiciona uma nova conta à lista de contas do cliente.
 
+        Args:
+        - conta (Conta): Conta a ser adicionada à lista.
+        """
+#self.contas.append(conta)  # Adiciona a conta à lista de contas do cliente
+
+#    def imprimir_contas(self) -> None:
+"""
+        Imprime na tela todas as contas pertencentes ao cliente.
+        """
+#        for conta in self.contas:
+#            print(conta)  # Imprime informações da conta
