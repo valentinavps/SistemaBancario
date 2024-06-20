@@ -1,37 +1,58 @@
-from colorama import Fore, Style
+from colorama import Fore, Style  # Importa módulos necessários
 from typing import List
 from models.conta import Conta
-# from models.conta_corrente import ContaCorrente
+# from models.conta_corrente import ContaCorrente  # Não utilizado neste trecho de código
 from datetime import datetime
+# Importa apenas o Saque, talvez devesse importar mais
 from models.transacao import Saque
+# Importa função específica de helpers
 from utils.helpers import recuperar_conta_cliente
 import random
 
+# Caminhos para arquivos de dados
 clientes_arquivotxt = "/home/valentinavps/POO/SistemaBancario/clientes.txt"
 contas_arquivotxt = "/home/valentinavps/POO/SistemaBancario/contas.txt"
 transacoes_arquivotxt = "/home/valentinavps/POO/SistemaBancario/transacoes.txt"
 
+
 class PessoaFisica:
-    def __init__(self, nome, data_nascimento, cpf, endereco, senha):
-        self.endereco = endereco
-        self.nome = nome
-        self.cpf = cpf
-        self.data_nascimento = data_nascimento
-        self.__senha = senha
-        self.clientes = []
+    def __init__(self, nome: str, data_nascimento: str, cpf: str, endereco: str, senha: str):
+        """
+        Inicializa uma instância de PessoaFisica com atributos básicos.
+        """
+        self.endereco = endereco  # Tipo: str
+        self.nome = nome  # Tipo: str
+        self.cpf = cpf  # Tipo: str
+        self.data_nascimento = data_nascimento  # Tipo: str
+        self.__senha = senha  # Tipo: str (atributo privado)
+
+        self.clientes = []  # Lista vazia para armazenar clientes
 
     @property
-    def senha(self):
+    def senha(self) -> str:
+        """
+        Getter para retornar a senha (privada).
+        """
         return self.__senha
-    
+
     @senha.setter
-    def senha(self, nova_senha):
+    def senha(self, nova_senha: str) -> None:
+        """
+        Setter para definir uma nova senha (privada).
+        """
         self.__senha = nova_senha
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """
+        Representação da classe PessoaFisica.
+        """
         return f"PessoaFisica(nome={self.nome}, cpf={self.cpf}, data_nascimento={self.data_nascimento}, endereco={self.endereco})"
-    
-    def ler_clientes_arquivo(self):
+
+    def ler_clientes_arquivo(self) -> List[dict]:
+        """
+        Lê os clientes de um arquivo e retorna uma lista de dicionários com os dados dos clientes.
+        Retorna uma lista vazia se o arquivo não for encontrado ou ocorrer um erro.
+        """
         clientes = []
         try:
             with open(clientes_arquivotxt, 'r') as file:
@@ -48,20 +69,25 @@ class PessoaFisica:
         except Exception as e:
             print(Fore.RED + f"Ocorreu um erro: {e}")
         return clientes
-       
 
-    # Filtra os clientes pelo CPF informado.
-    def filtrar_cliente(self, cpf_informado: str):
+    def filtrar_cliente(self, cpf_informado: str) -> dict:
+        """
+        Filtra os clientes pelo CPF informado.
+        Retorna um dicionário com os dados do cliente se encontrado, ou None se não encontrado.
+        """
         if not self.clientes:
             self.clientes = self.ler_clientes_arquivo()
-        
+
         for cliente in self.clientes:
             if cliente.get('cpf') == cpf_informado:
-                return cliente  # Retorna o cliente se encontrar o CPF informado
-        
-        return None  # Retorna None se não encontrar nenhum cliente com o CPF informado
+                return cliente
 
-    def criar_cliente(self):
+        return None
+
+    def criar_cliente(self) -> None:
+        """
+        Cria um novo cliente com base em informações fornecidas pelo usuário e salva no arquivo de clientes.
+        """
         while True:
             cpf = input("Informe o CPF (somente números): ")
             if not cpf.isdigit() or len(cpf) != 11:
@@ -78,22 +104,26 @@ class PessoaFisica:
 
         while True:
             nome = input("Informe o nome completo: ")
-            if all(x.isalpha() or x.isspace() for x in nome):  # Allows spaces in the name
+            if all(x.isalpha() or x.isspace() for x in nome):  # Permite espaços no nome
                 break
             else:
                 print("\n❌❌❌ Nome inválido! Informe apenas letras. ❌❌❌")
                 print(Style.RESET_ALL)
 
         while True:
-            data_nascimento = input("Informe a data de nascimento (dd/mm/aaaa): ")
+            data_nascimento = input(
+                "Informe a data de nascimento (dd/mm/aaaa): ")
             try:
-                data_nascimento_dt = datetime.strptime(data_nascimento, "%d/%m/%Y")
+                data_nascimento_dt = datetime.strptime(
+                    data_nascimento, "%d/%m/%Y")
                 break
             except ValueError:
-                print(Fore.RED + "\n❌❌❌ Formato de data inválido! Por favor, digite no formato dd/mm/aaaa. ❌❌❌")
+                print(
+                    Fore.RED + "\n❌❌❌ Formato de data inválido! Por favor, digite no formato dd/mm/aaaa. ❌❌❌")
                 print(Style.RESET_ALL)
 
-        endereco = input("Informe o endereço (logradouro, nro - bairro - cidade/sigla estado): ")
+        endereco = input(
+            "Informe o endereço (logradouro, nro - bairro - cidade/sigla estado): ")
         data_nascimento_formatada = data_nascimento_dt.strftime("%d-%m-%Y")
         senha = input("Informe sua senha: ")
         saldo = 0
@@ -102,19 +132,22 @@ class PessoaFisica:
             nome=nome, data_nascimento=data_nascimento_formatada, cpf=cpf, endereco=endereco, senha=senha
         )
 
-        data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        # Registra o cliente no arquivo de clientes
         with open("log.txt", "a") as file:
-            file.write(f"Cliente criado: {nome} | CPF: {cpf} | ({data_hora})\n")
+            file.write(f"Cliente criado: {nome} | CPF: {
+                       cpf} | ({datetime.now().strftime('%d-%m-%Y %H:%M:%S')})\n")
         with open(clientes_arquivotxt, "a") as file:
-            file.write(f"nome:{cliente.nome}|cpf:{cpf}|endereco:{endereco}|senha:{cliente.senha}|saldo:{saldo} \n")
+            file.write(f"nome:{cliente.nome}|cpf:{cpf}|endereco:{
+                       endereco}|senha:{cliente.senha}|saldo:{saldo}\n")
 
-        print(Fore.GREEN + f"\n✅✅✅ Cliente criado com sucesso! {data_hora} ✅✅✅")
+        print(Fore.GREEN + f"\n✅✅✅ Cliente criado com sucesso! {
+              datetime.now().strftime('%d-%m-%Y %H:%M:%S')} ✅✅✅")
         print(Style.RESET_ALL)
 
-        return cliente
-
-
     def criar_conta(self) -> None:
+        """
+        Cria uma nova conta para um cliente existente, gerando um número aleatório para a conta.
+        """
         while True:
             cpf = input("Informe o CPF (somente números): ")
             if not cpf.isdigit() or len(cpf) != 11:
@@ -137,18 +170,24 @@ class PessoaFisica:
             break
 
         numero = random.randint(10000000, 99999999)
+        # Tipo: Conta (supondo que Conta seja uma classe definida em models.conta)
         conta = Conta(numero=numero)
 
-        data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        # Registra a criação da conta no arquivo de contas
         with open("log.txt", "a") as file:
-            file.write(f"Conta criada: Conta: {numero}|cpf: {cpf}| ({data_hora})\n")
+            file.write(f"Conta criada: Conta: {numero}|cpf: {
+                       cpf}| ({datetime.now().strftime('%d-%m-%Y %H:%M:%S')})\n")
         with open(contas_arquivotxt, "a") as file:
             file.write(f"conta:{conta.numero}|cpf:{cpf}\n")
 
-        print(Fore.GREEN + f"\n✅✅✅ Conta criada com sucesso! {data_hora} ✅✅✅")
+        print(Fore.GREEN + f"\n✅✅✅ Conta criada com sucesso! {
+              datetime.now().strftime('%d-%m-%Y %H:%M:%S')} ✅✅✅")
         print(Style.RESET_ALL)
 
     def sacar(self) -> None:
+        """
+        Realiza um saque na conta de um cliente, atualizando o saldo tanto em memória quanto no arquivo.
+        """
         cpf = input("Informe o CPF do cliente: ")
         cliente = self.filtrar_cliente(cpf)
 
@@ -157,8 +196,10 @@ class PessoaFisica:
             print(Style.RESET_ALL)
             return
 
-        saldo = float(cliente.get('saldo', 0))  # Pega o saldo do cliente
-        valor = float(input("Informe o valor do saque: "))
+        # Tipo: float (supondo que saldo seja um valor numérico em string)
+        saldo = float(cliente.get('saldo', 0))
+        valor = float(input("Informe o valor do saque: "))  # Tipo: float
+
         if valor < 0:
             print(Fore.RED + "\n❌❌❌ Valor Inválido! ❌❌❌")
             print(Style.RESET_ALL)
@@ -167,47 +208,8 @@ class PessoaFisica:
             print(Style.RESET_ALL)
         else:
             saldo -= valor
-            cliente['saldo'] = str(saldo)  # Atualiza o saldo no dicionário do cliente
-
-            # Atualiza o saldo no arquivo de contas
-            with open(clientes_arquivotxt, 'r') as file:
-                linhas = file.readlines()
-
-            with open(clientes_arquivotxt, 'w') as file:
-                for linha in linhas:
-                    if linha.startswith(f"cpf:{cpf}"):
-                        partes = linha.strip().split('|')
-                        for i, parte in enumerate(partes):
-                            if parte.startswith('saldo:'):
-                                partes[i] = f"saldo:{saldo}"
-                        file.write('|'.join(partes) + '\n')
-                    else:
-                        file.write(linha)
-
-            data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-            with open("log.txt", "a") as file:
-                file.write(f"Transacao Realizada: cpf: {cpf}|saldo: {saldo} ({data_hora})\n")
-
-            print(Fore.GREEN + f"\n✅✅✅ Saque realizado com sucesso! {data_hora} ✅✅✅")
-            print(Style.RESET_ALL)
-
-    def deposito(self) -> None:
-        cpf = input("Informe o CPF do cliente: ")
-        cliente = self.filtrar_cliente(cpf)
-
-        if not cliente:
-            print(Fore.RED + "\n❌❌❌ Cliente não encontrado! ❌❌❌")
-            print(Style.RESET_ALL)
-            return
-
-        valor = float(input("Informe o valor do depósito: "))
-        if valor < 0:
-            print(Fore.RED + "\n❌❌❌ Valor Inválido! ❌❌❌")
-            print(Style.RESET_ALL)
-        else:
-            saldo = float(cliente.get('saldo', 0))  # Pega o saldo do cliente
-            saldo += valor
-            cliente['saldo'] = str(saldo)  # Atualiza o saldo no dicionário do cliente
+            # Atualiza o saldo no dicionário do cliente
+            cliente['saldo'] = str(saldo)
 
             # Atualiza o saldo no arquivo de clientes
             with open(clientes_arquivotxt, 'r') as file:
@@ -224,78 +226,66 @@ class PessoaFisica:
                     else:
                         file.write(linha)
 
-            data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            # Registra a transação no arquivo de log
             with open("log.txt", "a") as file:
-                file.write(f"Depósito Realizado: cpf: {cpf}|saldo: {saldo} ({data_hora})\n")
+                file.write(f"Transacao Realizada: cpf: {cpf}|saldo: {
+                           saldo} ({datetime.now().strftime('%d-%m-%Y %H:%M:%S')})\n")
 
-            print(Fore.GREEN + f"\n✅✅✅ Depósito realizado com sucesso! {data_hora} ✅✅✅")
+            print(Fore.GREEN + f"\n✅✅✅ Saque realizado com sucesso! {
+                  datetime.now().strftime('%d-%m-%Y %H:%M:%S')} ✅✅✅")
             print(Style.RESET_ALL)
 
-           
+    def deposito(self) -> None:
+        """
+        Realiza um depósito na conta de um cliente, atualizando o saldo tanto em memória quanto no arquivo.
+        """
+        cpf = input("Informe o CPF do cliente: ")
+        cliente = self.filtrar_cliente(cpf)
 
+        if not cliente:
+            print(Fore.RED + "\n❌❌❌ Cliente não encontrado! ❌❌❌")
+            print(Style.RESET_ALL)
+            return
+
+        valor = float(input("Informe o valor do depósito: "))  # Tipo: float
+
+        if valor < 0:
+            print(Fore.RED + "\n❌❌❌ Valor Inválido! ❌❌❌")
+            print(Style.RESET_ALL)
+        else:
+            saldo = float(cliente.get('saldo', 0))  # Tipo: float
+            saldo += valor
+            # Atualiza o saldo no dicionário do cliente
+            cliente['saldo'] = str(saldo)
+
+            # Atualiza o saldo no arquivo de clientes
+            with open(clientes_arquivotxt, 'r') as file:
+                linhas = file.readlines()
+
+            with open(clientes_arquivotxt, 'w') as file:
+                for linha in linhas:
+                    if linha.startswith(f"cpf:{cpf}"):
+                        partes = linha.strip().split('|')
+                        for i, parte in enumerate(partes):
+                            if parte.startswith('saldo:'):
+                                partes[i] = f"saldo:{saldo}"
+                        file.write('|'.join(partes) + '\n')
+                    else:
+                        file.write(linha)
+
+            # Registra a transação no arquivo de log
+            with open("log.txt", "a") as file:
+                file.write(f"Depósito Realizado: cpf: {cpf}|saldo: {
+                           saldo} ({datetime.now().strftime('%d-%m-%Y %H:%M:%S')})\n")
+
+            print(Fore.GREEN + f"\n✅✅✅ Depósito realizado com sucesso! {
+                  datetime.now().strftime('%d-%m-%Y %H:%M:%S')} ✅✅✅")
+            print(Style.RESET_ALL)
+
+    # Método exibir_extrato comentado pois está incompleto e não utilizado no script principal
     # def exibir_extrato(self, conta: ContaCorrente) -> None:
-    #     cpf = input("Informe o CPF do cliente: ")
-    #     cliente = self.filtrar_cliente(cpf)
+    #     ...
 
-    #     if not cliente:
-    #         print(Fore.RED + "\n❌❌❌ Cliente não encontrado! ❌❌❌")
-    #         print(Style.RESET_ALL)
-    #         return
-
-    #     print(Fore.CYAN + "\n================ EXTRATO ================")
-    #     transacoes = conta.historico.transacoes
-
-    #     extrato = ""
-    #     if not transacoes:
-    #         extrato = "Não foram realizadas movimentações."
-    #     else:
-    #         for transacao in transacoes:
-    #             tipo_transacao = transacao["tipo"]
-    #             texto_formatado = f"\n{tipo_transacao} ({transacao['data']}):\n\tR$ {transacao['valor']:.2f}\n"
-
-    #             if tipo_transacao == "Saque":
-    #                 texto_formatado = f"{Fore.RED}{texto_formatado}{Style.RESET_ALL}"
-    #             elif tipo_transacao == "Deposito":
-    #                 texto_formatado = f"{Fore.YELLOW}{texto_formatado}{Style.RESET_ALL}"
-
-    #             extrato += texto_formatado
-
-    #     print(extrato)
-    #     print(f"\n{Fore.CYAN}Saldo:\n\tR$ {conta.saldo:.2f}{Style.RESET_ALL}")
-    #     print(Fore.CYAN + "==========================================")
-
+# Código de teste comentado pois foi movido para um arquivo separado ou não utilizado
 # if __name__ == "__main__":
-#     # Criando uma instância da classe PessoaFisica
-#     pessoa = PessoaFisica(nome="Vava", data_nascimento="20/08/2002", cpf="88888888888", endereco="lala", senha="123")
-
-    # # Testando o método ler_clientes_arquivo()
-    # print("\nTestando ler_clientes_arquivo():")
-    # clientes = pessoa.ler_clientes_arquivo()
-    # print(clientes)
-
-    # # Testando o método filtrar_cliente()
-    # print("\nTestando filtrar_cliente():")
-    # cpf_teste = "88888888888"  # Substitua pelo CPF que você quer testar
-    # cliente_filtrado = pessoa.filtrar_cliente(cpf_teste)
-    # print(cliente_filtrado)
-
-    # # Testando o método criar_cliente()
-    # print("\nTestando criar_cliente():")
-    # pessoa.criar_cliente()
-
-    # # Testando o método criar_conta()
-    # print("\nTestando criar_conta():")
-    # pessoa.criar_conta()
-
-    #  # Testando o método deposito()
-    # print("\nTestando deposito():")
-    # pessoa.deposito()
-
-
-    # # Testando o método saque()
-    # print("\nTestando saque():")
-    # pessoa.sacar()
-
-
-
-
+#     ...
