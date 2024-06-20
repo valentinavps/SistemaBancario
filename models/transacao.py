@@ -40,6 +40,14 @@ class Saque(Transacao):
             print(Fore.RED + "\n❌❌❌ Cliente não encontrado! ❌❌❌")
             print(Style.RESET_ALL)
             return
+        
+        senha = input("Informe sua senha: ")
+        autenticacao = PessoaFisica("nome", "data_nascimento", cpf, "endereco", senha).autenticacao(cpf, senha)
+
+        if not autenticacao:
+            print(Fore.RED + "\n❌❌❌ Senha Incorreta! ❌❌❌")
+            print(Style.RESET_ALL)
+            return
 
         saldo = float(cliente.get('saldo', 0))  # Pega o saldo do cliente
         self._valor = float(input("Informe o valor do saque: "))
@@ -97,6 +105,14 @@ class Deposito(Transacao):
 
         if not cliente:
             print(Fore.RED + "\n❌❌❌ Cliente não encontrado! ❌❌❌")
+            print(Style.RESET_ALL)
+            return
+        
+        senha = input("Informe sua senha: ")
+        autenticacao = PessoaFisica("nome", "data_nascimento", cpf, "endereco", senha).autenticacao(cpf, senha)
+
+        if not autenticacao:
+            print(Fore.RED + "\n❌❌❌ Senha Incorreta! ❌❌❌")
             print(Style.RESET_ALL)
             return
 

@@ -62,6 +62,16 @@ class PessoaFisica:
                 return cliente  # Retorna o cliente se encontrar o CPF informado
         
         return None  # Retorna None se não encontrar nenhum cliente com o CPF informado
+    
+    def autenticacao(self, cpf_informado,senha_informada: str):
+        if not self.clientes:
+            self.clientes = self.ler_clientes_arquivo()
+        
+        for cliente in self.clientes:
+            if cliente.get('cpf') == cpf_informado and cliente.get('senha') == senha_informada:
+                return cliente  # Retorna o cliente se encontrar o CPF informado
+        
+        return None  # Retorna None se não encontrar nenhum cliente com o CPF informado
 
     # Cria um novo cliente
     def criar_cliente(self):
