@@ -9,6 +9,7 @@ from typing import List
 # Caminho dos arquivos de contas e clientes
 contas_arquivotxt: str = "/home/valentinavps/POO/SistemaBancario/contas.txt"
 clientes_arquivotxt: str = "/home/valentinavps/POO/SistemaBancario/clientes.txt"
+transacoes_arquivotxt: str = "/home/valentinavps/POO/SistemaBancario/transacoes.txt"
 
 class Operacoes:
     def __init__(self, clientes_arquivo: str) -> None:

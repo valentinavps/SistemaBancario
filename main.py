@@ -1,8 +1,7 @@
-from colorama import Fore, Style
 from utils.menu import menu
-from models.operacoes import Operacoes
+from models.pessoa_fisica import PessoaFisica
+from colorama import Fore, Style
 import logging
-from utils.helpers import ler_clientes_arquivo, filtrar_cliente_txt
 
 # Configurações do logger para escrever em um arquivo .txt
 logging.basicConfig(
@@ -15,29 +14,22 @@ logging.basicConfig(
 
 
 def main() -> None:
-
     clientes: list = []  # Lista para armazenar clientes
     contas: list = []  # Lista para armazenar contas
+
+    pessoa = PessoaFisica(nome="Vava", data_nascimento="20/08/2002", cpf="88888888888", endereco="lala", senha="123")
 
     while True:
         opcao: str = menu()  # Exibe o menu e obtém a opção escolhida pelo usuário
 
-        # if opcao == "d":
-        #     Operacoes.depositar(clientes)  # Chama a função para realizar um depósito
-        if opcao == "s":
-            Operacoes.sacar(clientes)  # Chama a função para realizar um saque
-        elif opcao == "e":
-            Operacoes.exibir_extrato(clientes)  # Chama a função para exibir o extrato
+        if opcao == "d":
+            pessoa.depositar()  # Chama a função para realizar um depósito
+        elif opcao == "s":
+            pessoa.sacar()  # Chama a função para realizar um saque
         elif opcao == "nu":
-            # Chama a função para criar um novo cliente
-            Operacoes.criar_cliente()
+            pessoa.criar_cliente()  # Chama a função para criar um novo cliente
         elif opcao == "nc":
-            # Define o número da nova conta
-            numero_conta: int = len(contas) + 1
-            # Chama a função para criar uma nova conta
-            Operacoes.criar_conta(numero_conta, clientes, contas)
-        # elif opcao == "lc":
-        #     Operacoes.listar_contas(contas)  # Chama a função para listar todas as contas
+            pessoa.criar_conta()  # Chama a função para criar uma nova conta
         elif opcao == "q":
             break  # Sai do loop e encerra o programa
         else:
@@ -45,6 +37,5 @@ def main() -> None:
                 Fore.RED + "\n❌❌❌ Operação inválida, por favor selecione novamente a operação desejada. ❌❌❌")
             print(Style.RESET_ALL)  # Resetando a cor
 
-
 if __name__ == "__main__":
-    main()  # Executa a função principal
+    main()

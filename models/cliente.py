@@ -12,16 +12,10 @@
 #        self.endereco = endereco
 #        self.contas = []  # Lista vazia para armazenar as contas do cliente
 
-#    def realizar_transacao(self, conta: Conta, transacao: Transacao) -> None:
-"""
-        Realiza uma transação em uma conta específica do cliente e registra no histórico.
+#   def realizar_transacao(self, conta: Conta, transacao: Transacao) -> None:
 
-        Args:
-        - conta (Conta): Conta na qual a transação será realizada.
-        - transacao (Transacao): Transação a ser realizada (saque, depósito, etc.).
-        """
-#        transacao.registrar(conta)                # Registra a transação na conta
-#        conta.historico.adicionar_transacao(transacao, conta)  # Adiciona a transação ao histórico da conta
+#       transacao.registrar(conta)                # Registra a transação na conta
+#         conta.historico.adicionar_transacao(transacao, conta)  # Adiciona a transação ao histórico da conta
 
 #    def adicionar_conta(self, conta: Conta) -> None:
 """

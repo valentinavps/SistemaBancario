@@ -1,11 +1,15 @@
 from colorama import Fore, Style
 from typing import List
 from models.conta import Conta
+# from models.conta_corrente import ContaCorrente
 from datetime import datetime
+from models.transacao import Saque
+from utils.helpers import recuperar_conta_cliente
 import random
 
 clientes_arquivotxt = "/home/valentinavps/POO/SistemaBancario/clientes.txt"
 contas_arquivotxt = "/home/valentinavps/POO/SistemaBancario/contas.txt"
+transacoes_arquivotxt = "/home/valentinavps/POO/SistemaBancario/transacoes.txt"
 
 class PessoaFisica:
     def __init__(self, nome, data_nascimento, cpf, endereco, senha):
@@ -134,29 +138,119 @@ class PessoaFisica:
 
         print(Fore.GREEN + f"\n✅✅✅ Conta criada com sucesso! {data_hora} ✅✅✅")
 
+    def sacar(self) -> None:
+            saldo = 0
+            cpf = input("Informe o CPF do cliente: ")
+            cliente = self.filtrar_cliente(cpf)
 
-if __name__ == "__main__":
-    # # Criando uma instância da classe PessoaFisica
-    pessoa = PessoaFisica(nome="Vava", data_nascimento="20/08/2002", cpf="88888888888", endereco="lala", senha="123")
+            if not cliente:
+                print(Fore.RED + "\n❌❌❌ Cliente não encontrado! ❌❌❌")
+                print(Style.RESET_ALL)
+                return
 
-    # # Testando o método ler_clientes_arquivo()
-    # print("\nTestando ler_clientes_arquivo():")
-    # clientes = pessoa.ler_clientes_arquivo()
-    # print(clientes)
+            valor = float(input("Informe o valor do saque: "))
+            if valor < 0:
+                print(Fore.RED + "\n❌❌❌ Valor Invalido! ❌❌❌")
+                print(Style.RESET_ALL)
+            else:
+                saldo = saldo-valor
+            
+            data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            with open("log.txt", "a") as file:
+                file.write(f"Transacao Realizada: cpf: {cpf}|saldo: {saldo} ({data_hora})\n")
+            with open(contas_arquivotxt, "a") as file:
+                file.write(f"cpf:{cpf}|saldo:{saldo}")
 
-    # # Testando o método filtrar_cliente()
-    # print("\nTestando filtrar_cliente():")
-    # cpf_teste = "88888888888"  # Substitua pelo CPF que você quer testar
-    # cliente_filtrado = pessoa.filtrar_cliente(cpf_teste)
-    # print(cliente_filtrado)
+            print(Fore.GREEN + f"\n✅✅✅ Saque realizado com sucesso! {data_hora} ✅✅✅")
 
-    # # Testando o método criar_cliente()
-    # print("\nTestando criar_cliente():")
-    # pessoa.criar_cliente()
+    def depositar(self) -> None:
+            saldo = saldo
+            cpf = input("Informe o CPF do cliente: ")
+            cliente = self.filtrar_cliente(cpf)
 
-      # Testando o método criar_conta()
-    print("\nTestando criar_conta():")
-    pessoa.criar_conta()
+            if not cliente:
+                print(Fore.RED + "\n❌❌❌ Cliente não encontrado! ❌❌❌")
+                print(Style.RESET_ALL)
+                return
+
+            valor = float(input("Informe o valor do deposito: "))
+            if valor < 0:
+                print(Fore.RED + "\n❌❌❌ Valor Invalido! ❌❌❌")
+                print(Style.RESET_ALL)
+            else:
+                saldo = saldo+valor
+            
+            data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            with open("log.txt", "a") as file:
+                file.write(f"Transacao Realizada: cpf: {cpf}|saldo: {saldo} ({data_hora})\n")
+            with open(contas_arquivotxt, "a") as file:
+                file.write(f"cpf:{cpf}|saldo:{saldo}")
+
+            print(Fore.GREEN + f"\n✅✅✅ Deposito realizado com sucesso! {data_hora} ✅✅✅")
+
+            
+
+           
+
+    # def exibir_extrato(self, conta: ContaCorrente) -> None:
+    #     cpf = input("Informe o CPF do cliente: ")
+    #     cliente = self.filtrar_cliente(cpf)
+
+    #     if not cliente:
+    #         print(Fore.RED + "\n❌❌❌ Cliente não encontrado! ❌❌❌")
+    #         print(Style.RESET_ALL)
+    #         return
+
+    #     print(Fore.CYAN + "\n================ EXTRATO ================")
+    #     transacoes = conta.historico.transacoes
+
+    #     extrato = ""
+    #     if not transacoes:
+    #         extrato = "Não foram realizadas movimentações."
+    #     else:
+    #         for transacao in transacoes:
+    #             tipo_transacao = transacao["tipo"]
+    #             texto_formatado = f"\n{tipo_transacao} ({transacao['data']}):\n\tR$ {transacao['valor']:.2f}\n"
+
+    #             if tipo_transacao == "Saque":
+    #                 texto_formatado = f"{Fore.RED}{texto_formatado}{Style.RESET_ALL}"
+    #             elif tipo_transacao == "Deposito":
+    #                 texto_formatado = f"{Fore.YELLOW}{texto_formatado}{Style.RESET_ALL}"
+
+    #             extrato += texto_formatado
+
+    #     print(extrato)
+    #     print(f"\n{Fore.CYAN}Saldo:\n\tR$ {conta.saldo:.2f}{Style.RESET_ALL}")
+    #     print(Fore.CYAN + "==========================================")
+
+
+# if __name__ == "__main__":
+  
+    # # # Criando uma instância da classe PessoaFisica
+    # pessoa = PessoaFisica(nome="Vava", data_nascimento="20/08/2002", cpf="88888888888", endereco="lala", senha="123")
+
+    # # # Testando o método ler_clientes_arquivo()
+    # # print("\nTestando ler_clientes_arquivo():")
+    # # clientes = pessoa.ler_clientes_arquivo()
+    # # print(clientes)
+
+    # # # Testando o método filtrar_cliente()
+    # # print("\nTestando filtrar_cliente():")
+    # # cpf_teste = "88888888888"  # Substitua pelo CPF que você quer testar
+    # # cliente_filtrado = pessoa.filtrar_cliente(cpf_teste)
+    # # print(cliente_filtrado)
+
+    # # # Testando o método criar_cliente()
+    # # print("\nTestando criar_cliente():")
+    # # pessoa.criar_cliente()
+
+    # #   # Testando o método criar_conta()
+    # # print("\nTestando criar_conta():")
+    # # pessoa.criar_conta()
+
+    # # Testando o método saque()
+    # print("\nTestando saque():")
+    # pessoa.saque()
 
 
 
