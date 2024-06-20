@@ -3,14 +3,15 @@ from typing import List
 from models.conta import Conta
 # from models.conta_corrente import ContaCorrente
 from datetime import datetime
-from models.transacao import Saque
 from utils.helpers import recuperar_conta_cliente
 import random
 
+# Define os caminhos dos arquivos de clientes, contas e transações
 clientes_arquivotxt = "/home/valentinavps/POO/SistemaBancario/clientes.txt"
 contas_arquivotxt = "/home/valentinavps/POO/SistemaBancario/contas.txt"
-transacoes_arquivotxt = "/home/valentinavps/POO/SistemaBancario/transacoes.txt"
 
+
+# Define a classe PessoaFisica
 class PessoaFisica:
     def __init__(self, nome, data_nascimento, cpf, endereco, senha):
         self.endereco = endereco
@@ -31,9 +32,11 @@ class PessoaFisica:
     def __repr__(self):
         return f"PessoaFisica(nome={self.nome}, cpf={self.cpf}, data_nascimento={self.data_nascimento}, endereco={self.endereco})"
     
+    # Lê os clientes do arquivo de texto
     def ler_clientes_arquivo(self):
         clientes = []
         try:
+            # Abre o arquivo de clientes em modo leitura
             with open(clientes_arquivotxt, 'r') as file:
                 for linha in file:
                     partes = linha.strip().split('|')
@@ -49,8 +52,7 @@ class PessoaFisica:
             print(Fore.RED + f"Ocorreu um erro: {e}")
         return clientes
        
-
-    # Filtra os clientes pelo CPF informado.
+    # Filtra os clientes pelo CPF informado
     def filtrar_cliente(self, cpf_informado: str):
         if not self.clientes:
             self.clientes = self.ler_clientes_arquivo()
@@ -61,6 +63,7 @@ class PessoaFisica:
         
         return None  # Retorna None se não encontrar nenhum cliente com o CPF informado
 
+    # Cria um novo cliente
     def criar_cliente(self):
         while True:
             cpf = input("Informe o CPF (somente números): ")
@@ -78,7 +81,7 @@ class PessoaFisica:
 
         while True:
             nome = input("Informe o nome completo: ")
-            if all(x.isalpha() or x.isspace() for x in nome):  # Allows spaces in the name
+            if all(x.isalpha() or x.isspace() for x in nome):  # Permite espaços no nome
                 break
             else:
                 print("\n❌❌❌ Nome inválido! Informe apenas letras. ❌❌❌")
@@ -98,13 +101,16 @@ class PessoaFisica:
         senha = input("Informe sua senha: ")
         saldo = 0
 
+        # Cria um novo objeto PessoaFisica
         cliente = PessoaFisica(
             nome=nome, data_nascimento=data_nascimento_formatada, cpf=cpf, endereco=endereco, senha=senha
         )
 
         data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        # Escreve no arquivo de log
         with open("log.txt", "a") as file:
             file.write(f"Cliente criado: {nome} | CPF: {cpf} | ({data_hora})\n")
+        # Escreve no arquivo de clientes
         with open(clientes_arquivotxt, "a") as file:
             file.write(f"nome:{cliente.nome}|cpf:{cpf}|endereco:{endereco}|senha:{cliente.senha}|saldo:{saldo} \n")
 
@@ -113,7 +119,7 @@ class PessoaFisica:
 
         return cliente
 
-
+    # Cria uma nova conta
     def criar_conta(self) -> None:
         while True:
             cpf = input("Informe o CPF (somente números): ")
@@ -136,100 +142,106 @@ class PessoaFisica:
                 return
             break
 
-        numero = random.randint(10000000, 99999999)
+        numero = random.randint(10000000, 99999999)  # Gera um número de conta aleatório
         conta = Conta(numero=numero)
 
         data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        # Escreve no arquivo de log
         with open("log.txt", "a") as file:
             file.write(f"Conta criada: Conta: {numero}|cpf: {cpf}| ({data_hora})\n")
+        # Escreve no arquivo de contas
         with open(contas_arquivotxt, "a") as file:
             file.write(f"conta:{conta.numero}|cpf:{cpf}\n")
 
         print(Fore.GREEN + f"\n✅✅✅ Conta criada com sucesso! {data_hora} ✅✅✅")
         print(Style.RESET_ALL)
 
-    def sacar(self) -> None:
-        cpf = input("Informe o CPF do cliente: ")
-        cliente = self.filtrar_cliente(cpf)
+    # # Realiza um saque
+    # def sacar(self) -> None:
+    #     cpf = input("Informe o CPF do cliente: ")
+    #     cliente = self.filtrar_cliente(cpf)
 
-        if not cliente:
-            print(Fore.RED + "\n❌❌❌ Cliente não encontrado! ❌❌❌")
-            print(Style.RESET_ALL)
-            return
+    #     if not cliente:
+    #         print(Fore.RED + "\n❌❌❌ Cliente não encontrado! ❌❌❌")
+    #         print(Style.RESET_ALL)
+    #         return
 
-        saldo = float(cliente.get('saldo', 0))  # Pega o saldo do cliente
-        valor = float(input("Informe o valor do saque: "))
-        if valor < 0:
-            print(Fore.RED + "\n❌❌❌ Valor Inválido! ❌❌❌")
-            print(Style.RESET_ALL)
-        elif valor > saldo:
-            print(Fore.RED + "\n❌❌❌ Saldo insuficiente! ❌❌❌")
-            print(Style.RESET_ALL)
-        else:
-            saldo -= valor
-            cliente['saldo'] = str(saldo)  # Atualiza o saldo no dicionário do cliente
+    #     saldo = float(cliente.get('saldo', 0))  # Pega o saldo do cliente
+    #     valor = float(input("Informe o valor do saque: "))
+    #     if valor < 0:
+    #         print(Fore.RED + "\n❌❌❌ Valor Inválido! ❌❌❌")
+    #         print(Style.RESET_ALL)
+    #     elif valor > saldo:
+    #         print(Fore.RED + "\n❌❌❌ Saldo insuficiente! ❌❌❌")
+    #         print(Style.RESET_ALL)
+    #     else:
+    #         saldo -= valor
+    #         cliente['saldo'] = str(saldo)  # Atualiza o saldo no dicionário do cliente
 
-            # Atualiza o saldo no arquivo de contas
-            with open(clientes_arquivotxt, 'r') as file:
-                linhas = file.readlines()
+    #         # Atualiza o saldo no arquivo de contas
+    #         with open(clientes_arquivotxt, 'r') as file:
+    #             linhas = file.readlines()
 
-            with open(clientes_arquivotxt, 'w') as file:
-                for linha in linhas:
-                    if linha.startswith(f"cpf:{cpf}"):
-                        partes = linha.strip().split('|')
-                        for i, parte in enumerate(partes):
-                            if parte.startswith('saldo:'):
-                                partes[i] = f"saldo:{saldo}"
-                        file.write('|'.join(partes) + '\n')
-                    else:
-                        file.write(linha)
+    #         with open(clientes_arquivotxt, 'w') as file:
+    #             for linha in linhas:
+    #                 if linha.startswith(f"cpf:{cpf}"):
+    #                     partes = linha.strip().split('|')
+    #                     for i, parte in enumerate(partes):
+    #                         if parte.startswith('saldo:'):
+    #                             partes[i] = f"saldo:{saldo}"
+    #                     file.write('|'.join(partes) + '\n')
+    #                 else:
+    #                     file.write(linha)
 
-            data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-            with open("log.txt", "a") as file:
-                file.write(f"Transacao Realizada: cpf: {cpf}|saldo: {saldo} ({data_hora})\n")
+    #         data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    #         # Escreve no arquivo de log
+    #         with open("log.txt", "a") as file:
+    #             file.write(f"Transacao Realizada: cpf: {cpf}|saldo: {saldo} ({data_hora})\n")
 
-            print(Fore.GREEN + f"\n✅✅✅ Saque realizado com sucesso! {data_hora} ✅✅✅")
-            print(Style.RESET_ALL)
+    #         print(Fore.GREEN + f"\n✅✅✅ Saque realizado com sucesso! {data_hora} ✅✅✅")
+    #         print(Style.RESET_ALL)
 
-    def deposito(self) -> None:
-        cpf = input("Informe o CPF do cliente: ")
-        cliente = self.filtrar_cliente(cpf)
+    # # Realiza um depósito
+    # def deposito(self) -> None:
+    #     cpf = input("Informe o CPF do cliente: ")
+    #     cliente = self.filtrar_cliente(cpf)
 
-        if not cliente:
-            print(Fore.RED + "\n❌❌❌ Cliente não encontrado! ❌❌❌")
-            print(Style.RESET_ALL)
-            return
+    #     if not cliente:
+    #         print(Fore.RED + "\n❌❌❌ Cliente não encontrado! ❌❌❌")
+    #         print(Style.RESET_ALL)
+    #         return
 
-        valor = float(input("Informe o valor do depósito: "))
-        if valor < 0:
-            print(Fore.RED + "\n❌❌❌ Valor Inválido! ❌❌❌")
-            print(Style.RESET_ALL)
-        else:
-            saldo = float(cliente.get('saldo', 0))  # Pega o saldo do cliente
-            saldo += valor
-            cliente['saldo'] = str(saldo)  # Atualiza o saldo no dicionário do cliente
+    #     valor = float(input("Informe o valor do depósito: "))
+    #     if valor < 0:
+    #         print(Fore.RED + "\n❌❌❌ Valor Inválido! ❌❌❌")
+    #         print(Style.RESET_ALL)
+    #     else:
+    #         saldo = float(cliente.get('saldo', 0))  # Pega o saldo do cliente
+    #         saldo += valor
+    #         cliente['saldo'] = str(saldo)  # Atualiza o saldo no dicionário do cliente
 
-            # Atualiza o saldo no arquivo de clientes
-            with open(clientes_arquivotxt, 'r') as file:
-                linhas = file.readlines()
+    #         # Atualiza o saldo no arquivo de clientes
+    #         with open(clientes_arquivotxt, 'r') as file:
+    #             linhas = file.readlines()
 
-            with open(clientes_arquivotxt, 'w') as file:
-                for linha in linhas:
-                    if linha.startswith(f"cpf:{cpf}"):
-                        partes = linha.strip().split('|')
-                        for i, parte in enumerate(partes):
-                            if parte.startswith('saldo:'):
-                                partes[i] = f"saldo:{saldo}"
-                        file.write('|'.join(partes) + '\n')
-                    else:
-                        file.write(linha)
+    #         with open(clientes_arquivotxt, 'w') as file:
+    #             for linha in linhas:
+    #                 if linha.startswith(f"cpf:{cpf}"):
+    #                     partes = linha.strip().split('|')
+    #                     for i, parte in enumerate(partes):
+    #                         if parte.startswith('saldo:'):
+    #                             partes[i] = f"saldo:{saldo}"
+    #                     file.write('|'.join(partes) + '\n')
+    #                 else:
+    #                     file.write(linha)
 
-            data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-            with open("log.txt", "a") as file:
-                file.write(f"Depósito Realizado: cpf: {cpf}|saldo: {saldo} ({data_hora})\n")
+    #         data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    #         # Escreve no arquivo de log
+    #         with open("log.txt", "a") as file:
+    #             file.write(f"Depósito Realizado: cpf: {cpf}|saldo: {saldo} ({data_hora})\n")
 
-            print(Fore.GREEN + f"\n✅✅✅ Depósito realizado com sucesso! {data_hora} ✅✅✅")
-            print(Style.RESET_ALL)
+    #         print(Fore.GREEN + f"\n✅✅✅ Depósito realizado com sucesso! {data_hora} ✅✅✅")
+    #         print(Style.RESET_ALL)
 
            
 

@@ -1,5 +1,6 @@
 from utils.menu import menu
 from models.pessoa_fisica import PessoaFisica
+from models.transacao import Saque, Deposito
 from colorama import Fore, Style
 import logging
 
@@ -14,18 +15,18 @@ logging.basicConfig(
 
 
 def main() -> None:
-    clientes: list = []  # Lista para armazenar clientes
-    contas: list = []  # Lista para armazenar contas
-
+    
     pessoa = PessoaFisica(nome="Vava", data_nascimento="20/08/2002", cpf="88888888888", endereco="lala", senha="123")
+    saque = Saque()
+    deposito = Deposito()
 
     while True:
         opcao: str = menu()  # Exibe o menu e obtém a opção escolhida pelo usuário
 
         if opcao == "d":
-            pessoa.deposito()  # Chama a função para realizar um depósito
+            deposito.deposito()  # Chama a função para realizar um depósito
         elif opcao == "s":
-            pessoa.sacar()  # Chama a função para realizar um saque
+            saque.sacar()  # Chama a função para realizar um saque
         elif opcao == "nu":
             pessoa.criar_cliente()  # Chama a função para criar um novo cliente
         elif opcao == "nc":
