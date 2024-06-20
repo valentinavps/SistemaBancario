@@ -1,18 +1,19 @@
-from abc import ABC, abstractmethod
-from colorama import Fore, Style
-from datetime import datetime
-from models.pessoa_fisica import PessoaFisica
+from abc import ABC, abstractmethod  # Importa módulos para definir classes abstratas
+from colorama import Fore, Style  # Importa cores para console
+from datetime import datetime  # Importa módulo para manipulação de data/hora
+from models.pessoa_fisica import PessoaFisica  # Importa a classe PessoaFisica do módulo models
 
-# Define os caminhos dos arquivos de clientes e transações
+# Define o caminho do arquivo de clientes
 clientes_arquivotxt = "/home/valentinavps/POO/SistemaBancario/clientes.txt"
 
-# Classe abstrata Transacao, que serve como base para outras classes de transações
+# Classe abstrata Transacao, serve como base para outras classes de transações
 class Transacao(ABC):
     @property
     @abstractmethod
     def valor(self) -> float:
         pass
 
+    # Método abstrato para registrar a transação (comentado)
     # @abstractmethod
     # def registrar(self, conta: object) -> None:
     #     pass
@@ -20,18 +21,13 @@ class Transacao(ABC):
 # Classe Saque que herda de Transacao e implementa os métodos abstratos
 class Saque(Transacao):
     def __init__(self) -> None:
-        self._valor: float = 0.0
+        self._valor: float = 0.0  # Inicializa o valor do saque como zero
 
     @property
     def valor(self) -> float:
-        return self._valor
+        return self._valor  # Retorna o valor do saque
 
-    # def registrar(self, conta: object) -> None:
-    #     sucesso_transacao: bool = conta.sacar(self.valor)
-    #     if sucesso_transacao:
-    #         conta.historico.adicionar_transacao(self, conta)
-
-    # Realiza um saque
+    # Método para realizar um saque
     def sacar(self) -> None:
         cpf = input("Informe o CPF do cliente: ")
         cliente = PessoaFisica("nome", "data_nascimento", cpf, "endereco", "senha").filtrar_cliente(cpf)
@@ -49,8 +45,10 @@ class Saque(Transacao):
             print(Style.RESET_ALL)
             return
 
-        saldo = float(cliente.get('saldo', 0))  # Pega o saldo do cliente
-        self._valor = float(input("Informe o valor do saque: "))
+        saldo = float(cliente.get('saldo', 0))  # Obtém o saldo atual do cliente
+        self._valor = float(input("Informe o valor do saque: "))  # Solicita o valor do saque ao usuário
+
+        # Validações do saque
         if self._valor < 0:
             print(Fore.RED + "\n❌❌❌ Valor Inválido! ❌❌❌")
             print(Style.RESET_ALL)
@@ -58,7 +56,7 @@ class Saque(Transacao):
             print(Fore.RED + "\n❌❌❌ Saldo insuficiente! ❌❌❌")
             print(Style.RESET_ALL)
         else:
-            saldo -= self._valor
+            saldo -= self._valor  # Deduz o valor do saque do saldo do cliente
             cliente['saldo'] = str(saldo)  # Atualiza o saldo no dicionário do cliente
 
             # Atualiza o saldo no arquivo de clientes
@@ -87,18 +85,13 @@ class Saque(Transacao):
 # Classe Deposito que herda de Transacao e implementa os métodos abstratos
 class Deposito(Transacao):
     def __init__(self) -> None:
-        self._valor: float = 0.0
+        self._valor: float = 0.0  # Inicializa o valor do depósito como zero
 
     @property
     def valor(self) -> float:
-        return self._valor
+        return self._valor  # Retorna o valor do depósito
 
-    # def registrar(self, conta: object) -> None:
-    #     sucesso_transacao: bool = conta.depositar(self.valor)
-    #     if sucesso_transacao:
-    #         conta.historico.adicionar_transacao(self, conta)
-
-    # Realiza um depósito
+    # Método para realizar um depósito
     def deposito(self) -> None:
         cpf = input("Informe o CPF do cliente: ")
         cliente = PessoaFisica("nome", "data_nascimento", cpf, "endereco", "senha").filtrar_cliente(cpf)
@@ -116,13 +109,15 @@ class Deposito(Transacao):
             print(Style.RESET_ALL)
             return
 
-        self._valor = float(input("Informe o valor do depósito: "))
+        self._valor = float(input("Informe o valor do depósito: "))  # Solicita o valor do depósito ao usuário
+
+        # Validações do depósito
         if self._valor < 0:
             print(Fore.RED + "\n❌❌❌ Valor Inválido! ❌❌❌")
             print(Style.RESET_ALL)
         else:
-            saldo = float(cliente.get('saldo', 0))  # Pega o saldo do cliente
-            saldo += self._valor
+            saldo = float(cliente.get('saldo', 0))  # Obtém o saldo atual do cliente
+            saldo += self._valor  # Adiciona o valor do depósito ao saldo do cliente
             cliente['saldo'] = str(saldo)  # Atualiza o saldo no dicionário do cliente
 
             # Atualiza o saldo no arquivo de clientes
