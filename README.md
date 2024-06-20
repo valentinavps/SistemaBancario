@@ -20,7 +20,7 @@ Este projeto consiste em um sistema bancário simples, implementado em Python. E
 Clone o repositório do projeto:
 ```bash
 git clone https://github.com/valentinavps/SistemaBancario.git
-cd SistemaBancario/versao-2
+cd SistemaBancario/VersaoOficial
 ```
 
 ## Execução
