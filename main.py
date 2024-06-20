@@ -23,7 +23,7 @@ def main() -> None:
         opcao: str = menu()  # Exibe o menu e obtém a opção escolhida pelo usuário
 
         if opcao == "d":
-            pessoa.depositar()  # Chama a função para realizar um depósito
+            pessoa.deposito()  # Chama a função para realizar um depósito
         elif opcao == "s":
             pessoa.sacar()  # Chama a função para realizar um saque
         elif opcao == "nu":

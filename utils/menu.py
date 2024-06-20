@@ -17,7 +17,6 @@ def menu() -> str:
     [e]📊\tExtrato
     [nc]📋\tNova conta
     [nu]👤\tNovo usuário
-    [lc]📄\tListar contas
     [q]🚪\tSair
     => {Style.RESET_ALL}"""
 

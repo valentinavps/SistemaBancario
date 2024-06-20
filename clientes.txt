@@ -1,3 +1,2 @@
-nome:mari|cpf:00000000000|endereco:bh|senha:1230 
-nome:Joana Santos|cpf:12345678910|endereco:BH|senha:789 
 nome:Viviane Silva|cpf:78945612301|endereco:SP|senha:000|saldo:0 
+nome:Joana Castro|cpf:11111111111|endereco:SP|senha:777|saldo:0 

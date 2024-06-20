@@ -18,7 +18,6 @@ class PessoaFisica:
         self.cpf = cpf
         self.data_nascimento = data_nascimento
         self.__senha = senha
-        self.saldo = 0
         self.clientes = []
 
     @property
@@ -107,7 +106,7 @@ class PessoaFisica:
         with open("log.txt", "a") as file:
             file.write(f"Cliente criado: {nome} | CPF: {cpf} | ({data_hora})\n")
         with open(clientes_arquivotxt, "a") as file:
-            file.write(f"nome:{cliente.nome}|cpf:{cpf}|endereco:{endereco}|senha:{cliente.senha}|saldo:{cliente.saldo} \n")
+            file.write(f"nome:{cliente.nome}|cpf:{cpf}|endereco:{endereco}|senha:{cliente.senha}|saldo:{saldo} \n")
 
         print(Fore.GREEN + f"\n✅✅✅ Cliente criado com sucesso! {data_hora} ✅✅✅")
         print(Style.RESET_ALL)
@@ -192,6 +191,46 @@ class PessoaFisica:
             print(Fore.GREEN + f"\n✅✅✅ Saque realizado com sucesso! {data_hora} ✅✅✅")
             print(Style.RESET_ALL)
 
+    def deposito(self) -> None:
+        cpf = input("Informe o CPF do cliente: ")
+        cliente = self.filtrar_cliente(cpf)
+
+        if not cliente:
+            print(Fore.RED + "\n❌❌❌ Cliente não encontrado! ❌❌❌")
+            print(Style.RESET_ALL)
+            return
+
+        valor = float(input("Informe o valor do depósito: "))
+        if valor < 0:
+            print(Fore.RED + "\n❌❌❌ Valor Inválido! ❌❌❌")
+            print(Style.RESET_ALL)
+        else:
+            saldo = float(cliente.get('saldo', 0))  # Pega o saldo do cliente
+            saldo += valor
+            cliente['saldo'] = str(saldo)  # Atualiza o saldo no dicionário do cliente
+
+            # Atualiza o saldo no arquivo de clientes
+            with open(clientes_arquivotxt, 'r') as file:
+                linhas = file.readlines()
+
+            with open(clientes_arquivotxt, 'w') as file:
+                for linha in linhas:
+                    if linha.startswith(f"cpf:{cpf}"):
+                        partes = linha.strip().split('|')
+                        for i, parte in enumerate(partes):
+                            if parte.startswith('saldo:'):
+                                partes[i] = f"saldo:{saldo}"
+                        file.write('|'.join(partes) + '\n')
+                    else:
+                        file.write(linha)
+
+            data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            with open("log.txt", "a") as file:
+                file.write(f"Depósito Realizado: cpf: {cpf}|saldo: {saldo} ({data_hora})\n")
+
+            print(Fore.GREEN + f"\n✅✅✅ Depósito realizado com sucesso! {data_hora} ✅✅✅")
+            print(Style.RESET_ALL)
+
            
 
     # def exibir_extrato(self, conta: ContaCorrente) -> None:
@@ -225,20 +264,20 @@ class PessoaFisica:
     #     print(f"\n{Fore.CYAN}Saldo:\n\tR$ {conta.saldo:.2f}{Style.RESET_ALL}")
     #     print(Fore.CYAN + "==========================================")
 
-if __name__ == "__main__":
-    # Criando uma instância da classe PessoaFisica
-    pessoa = PessoaFisica(nome="Vava", data_nascimento="20/08/2002", cpf="88888888888", endereco="lala", senha="123")
+# if __name__ == "__main__":
+#     # Criando uma instância da classe PessoaFisica
+#     pessoa = PessoaFisica(nome="Vava", data_nascimento="20/08/2002", cpf="88888888888", endereco="lala", senha="123")
 
-    # Testando o método ler_clientes_arquivo()
-    print("\nTestando ler_clientes_arquivo():")
-    clientes = pessoa.ler_clientes_arquivo()
-    print(clientes)
+    # # Testando o método ler_clientes_arquivo()
+    # print("\nTestando ler_clientes_arquivo():")
+    # clientes = pessoa.ler_clientes_arquivo()
+    # print(clientes)
 
-    # Testando o método filtrar_cliente()
-    print("\nTestando filtrar_cliente():")
-    cpf_teste = "88888888888"  # Substitua pelo CPF que você quer testar
-    cliente_filtrado = pessoa.filtrar_cliente(cpf_teste)
-    print(cliente_filtrado)
+    # # Testando o método filtrar_cliente()
+    # print("\nTestando filtrar_cliente():")
+    # cpf_teste = "88888888888"  # Substitua pelo CPF que você quer testar
+    # cliente_filtrado = pessoa.filtrar_cliente(cpf_teste)
+    # print(cliente_filtrado)
 
     # # Testando o método criar_cliente()
     # print("\nTestando criar_cliente():")
@@ -248,9 +287,14 @@ if __name__ == "__main__":
     # print("\nTestando criar_conta():")
     # pessoa.criar_conta()
 
-    # Testando o método saque()
-    print("\nTestando saque():")
-    pessoa.saque()
+    #  # Testando o método deposito()
+    # print("\nTestando deposito():")
+    # pessoa.deposito()
+
+
+    # # Testando o método saque()
+    # print("\nTestando saque():")
+    # pessoa.sacar()
 
 
 
