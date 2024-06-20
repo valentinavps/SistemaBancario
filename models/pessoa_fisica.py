@@ -166,6 +166,7 @@ class PessoaFisica:
         print(Fore.GREEN + f"\n✅✅✅ Conta criada com sucesso! {data_hora} ✅✅✅")
         print(Style.RESET_ALL)
 
+    #Mostra oextrato da conta do Cliente
     def exibir_extrato(self) -> None:
         cpf = input("Informe o CPF do cliente: ")
         cliente =self.filtrar_cliente(cpf)
