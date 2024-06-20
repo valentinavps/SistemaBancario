@@ -1,1 +1,3 @@
-nome:marcia|cpf:88888888888|senha:12345 
+
+nome:vava|cpf:12345678910|endereco:bh|senha:123 
+nome:tati|cpf:88888888888|endereco:la|senha:123 

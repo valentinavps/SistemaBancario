@@ -1,6 +1,8 @@
 from colorama import Fore, Style
 from typing import List
+from models.conta import Conta
 from datetime import datetime
+import random
 
 clientes_arquivotxt = "/home/valentinavps/POO/SistemaBancario/clientes.txt"
 contas_arquivotxt = "/home/valentinavps/POO/SistemaBancario/contas.txt"
@@ -53,9 +55,7 @@ class PessoaFisica:
         
         return False  # Se não encontrar nenhum cliente com o CPF informado, retorna False
 
-        
-    
-    def criar_cliente(self) -> None:
+    def criar_cliente(self):
         while True:
             cpf = input("Informe o CPF (somente números): ")
             if not cpf.isdigit() or len(cpf) != 11:
@@ -99,25 +99,64 @@ class PessoaFisica:
 
         print(Fore.GREEN + f"\n✅✅✅ Cliente criado com sucesso! {data_hora} ✅✅✅")
 
+        return cliente
+
+
+    def criar_conta(self) -> None:
+        # while True:
+        cpf= input("Informe o CPF (somente números): ")
+        if not cpf.isdigit() or len(cpf) != 11:
+            print(Fore.RED + "\n❌❌❌ CPF inválido ❌❌❌")
+        # else:
+        #     cliente = self.filtrar_cliente(cpf)
+        #     print(self.filtrar_cliente(cpf))
+            # if not cliente:
+            #     print(Fore.YELLOW + "\n❗❗❗ Nao existe cliente com esse CPF! ❗❗❗")
+            #     return
+            # break
+
+        # while True:
+        #     senha = input("Informe sua senha: ")
+        #     autenticacao = self.filtrar_cliente(senha)
+        #     if not autenticacao:
+        #         print(Fore.RED + "\n❌❌❌ Senha incorreta ❌❌❌")
+        #         return
+        #     break
+        
+        numero =  random.randint(10000000, 99999999)
+        conta = Conta(numero=numero)
+
+        data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        with open("log.txt", "a") as file:
+            file.write(f"Conta criada: Conta: {numero}|cpf: {cpf}| ({data_hora})\n")
+        with open(contas_arquivotxt, "a") as file:
+            file.write(f"conta:{conta.numero}|cpf:{cpf}")
+
+        print(Fore.GREEN + f"\n✅✅✅ Conta criada com sucesso! {data_hora} ✅✅✅")
+
 
 if __name__ == "__main__":
-    # Criando uma instância da classe PessoaFisica
+    # # Criando uma instância da classe PessoaFisica
     pessoa = PessoaFisica(nome="Vava", data_nascimento="20/08/2002", cpf="88888888888", endereco="lala", senha="123")
 
-    # Testando o método ler_clientes_arquivo()
-    print("\nTestando ler_clientes_arquivo():")
-    clientes = pessoa.ler_clientes_arquivo()
-    print(clientes)
+    # # Testando o método ler_clientes_arquivo()
+    # print("\nTestando ler_clientes_arquivo():")
+    # clientes = pessoa.ler_clientes_arquivo()
+    # print(clientes)
 
-    # Testando o método filtrar_cliente()
-    print("\nTestando filtrar_cliente():")
-    cpf_teste = "88888888888"  # Substitua pelo CPF que você quer testar
-    cliente_filtrado = pessoa.filtrar_cliente(cpf_teste)
-    print(cliente_filtrado)
+    # # Testando o método filtrar_cliente()
+    # print("\nTestando filtrar_cliente():")
+    # cpf_teste = "88888888888"  # Substitua pelo CPF que você quer testar
+    # cliente_filtrado = pessoa.filtrar_cliente(cpf_teste)
+    # print(cliente_filtrado)
 
-    # Testando o método criar_cliente()
-    print("\nTestando criar_cliente():")
-    pessoa.criar_cliente()
+    # # Testando o método criar_cliente()
+    # print("\nTestando criar_cliente():")
+    # pessoa.criar_cliente()
+
+      # Testando o método criar_conta()
+    print("\nTestando criar_conta():")
+    pessoa.criar_conta()
 
 
 
