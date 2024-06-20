@@ -112,7 +112,7 @@ class PessoaFisica:
             file.write(f"Cliente criado: {nome} | CPF: {cpf} | ({data_hora})\n")
         # Escreve no arquivo de clientes
         with open(clientes_arquivotxt, "a") as file:
-            file.write(f"nome:{cliente.nome}|cpf:{cpf}|endereco:{endereco}|senha:{cliente.senha}|saldo:{saldo} \n")
+            file.write(f"cpf:{cpf}|nome:{cliente.nome}|cpf:{cpf}|endereco:{endereco}|senha:{cliente.senha}|saldo:{saldo} \n")
 
         print(Fore.GREEN + f"\n✅✅✅ Cliente criado com sucesso! {data_hora} ✅✅✅")
         print(Style.RESET_ALL)
