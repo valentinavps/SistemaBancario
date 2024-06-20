@@ -29,6 +29,7 @@ Para rodar o código, utilize o seguinte comando:
 ```bash
 python main.py
 ```
+Observação: é necessário alterar o path para os arquivos txt no arquivo pessoa_fisica.py, que esta localizado na pasta models.
 
 ## Estrutura do Projeto
 
