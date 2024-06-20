@@ -31,6 +31,8 @@ def main() -> None:
             pessoa.criar_cliente()  # Chama a função para criar um novo cliente
         elif opcao == "nc":
             pessoa.criar_conta()  # Chama a função para criar uma nova conta
+        elif opcao == "e":
+            pessoa.exibir_extrato()  # Chama a função para criar uma nova conta
         elif opcao == "q":
             break  # Sai do loop e encerra o programa
         else:
